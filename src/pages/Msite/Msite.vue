@@ -2,32 +2,30 @@
   <section class="msite">
     <!--首页头部-->
     <HeaderTop :title="address.name">
-      <span class="header_search" slot="left">
+      <span class="header_search" slot="left" to="/search">
         <i class="iconfont icon-icon-test1"></i>
       </span>
-      <span class="header_login" slot="right">
-        <router-link to="/login"  class="profile-link">
-          <span class="header_login_text">登录|注册</span>
-        </router-link>
-      </span>
+      <router-link to="login" class="header_login" slot="right">
+        <span class="header_login_text"> 登录|注册</span>
+      </router-link>
     </HeaderTop>
     <!--首页导航-->
     <nav class="msite_nav">
       <div class="swiper-container" v-if="categorysArr.length>0">
         <div class="swiper-wrapper">
-          <div class="swiper-slide"  v-for="(cs, index) in categorysArr" :key="index">
-            <a href="javascript:" class="link_to_food" v-for="(c, index2) in cs" :key="index2">
+          <div class="swiper-slide"  v-for="(categorys, index) in categorysArr" :key="index">
+            <a href="javascript:" class="link_to_food" v-for="(category, index2) in categorys" :key="index2">
               <div class="food_container">
-                <img  :src="imgBaseUrl+c.image_url">
+                <img  :src="baseImgUrl+category.image_url">
               </div>
-              <span>{{c.title}}</span>
+              <span>{{category.title}}</span>
             </a>
           </div>
         </div>
         <!-- Add Pagination 分页器-->
         <div class="swiper-pagination"></div>
       </div>
-      <img src="./images/nav/1.jpg" v-else>
+      <img src="./images/msite_back.svg" alt="back" v-else>
     </nav>
     <!--首页附近商家-->
     <div class="msite_shop_list">
@@ -42,31 +40,98 @@
 </template>
 
 <script>
-import Swiper from 'swiper'
-import 'swiper/swiper-bundle.css'
+  import {mapState} from 'vuex'
 
-import HeaderTop from "../../components/HeaderTop/HeaderTop";
-import ShopList from "../../components/ShopList/ShopList";
+  import Swiper from 'swiper'
+  import 'swiper/css/swiper.min.css'
 
-export default {
-  name: "Msite",
-  mounted () {
-    new Swiper ('.swiper-container', {
+  import HeaderTop from "../../components/HeaderTop/HeaderTop";
+  import ShopList from "../../components/ShopList/ShopList";
 
-      loop: true, // 循环模式选项
+  export default {
+    name: "Msite",
+    data(){
+      return{
+        baseImgUrl:'https://fuss10.elemecdn.com'
+      }
+    },
 
-      // 如果需要分页器
-      pagination: {
-        el: '.swiper-pagination',
-      },
-    })
-  },
-  components: {
-    HeaderTop,
-    Swiper,
-    ShopList,
+    mounted () {
+
+      this.$store.dispatch('getCategorys')
+      this.$store.dispatch('getShops')
+    },
+
+    computed:{
+      ...mapState(['address','categorys', 'userInfo']),
+
+      /*
+      根据categorys 一维数组生成二维数组
+      小数组中元素个数最大是8
+       */
+      categorysArr(){
+        const {categorys} = this
+        //准备空的二维数组
+        const arr = []
+        let minArr = []
+        //遍历categorys
+        categorys.forEach(c =>{
+          //如果当前数组已满，创建一个新的
+          if (minArr.length === 8){
+            minArr = []
+          }
+          //如果minArr是空的，将小数组保存到大数组中
+          if (minArr.length === 0){
+            arr.push(minArr)
+          }
+          //将当前分类保存到小数组
+          minArr.push(c)
+        })
+
+        return arr
+      }
+    },
+
+    watch:{
+      //
+      categorys (value){
+        // setTimeout(()=>{
+        //   //不太好
+        //   new Swiper ('.swiper-container', {
+        //
+        //     loop: true, // 循环模式选项
+        //
+        //     // 如果需要分页器
+        //     pagination: {
+        //       el: '.swiper-pagination',
+        //     },
+        //   })
+        // },100)
+
+        //界面更新就立即创建Swiper对象
+        this.$nextTick(()=>{//一旦完成界面更新，立即调用
+          new Swiper ('.swiper-container', {
+
+            loop: true, // 循环模式选项
+
+            // 如果需要分页器
+            pagination: {
+              el: '.swiper-pagination',
+            },
+          })
+        })
+      }
+
+
+    },
+
+    components: {
+      HeaderTop,
+      Swiper,
+      ShopList,
+    },
+
   }
-}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

@@ -14,7 +14,7 @@
     </div>
     <div class="guide_item" @click="goto('/order')" :class="{on: isCurrent('/order')}">
       <span class="item_icon">
-      <i class="iconfont icon-cart"></i>
+      <i class="iconfont icon-order-s"></i>
       </span>
       <span>订单</span>
     </div>

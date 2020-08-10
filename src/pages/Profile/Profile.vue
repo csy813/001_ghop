@@ -2,16 +2,16 @@
   <section class="profile">
     <HeaderTop title="我的"/>
     <section class="profile-number">
-      <router-link to="/login"  class="profile-link">
+      <router-link to="login"  class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top">登录/注册</p>
+          <p class="user-info-top">登陆/注册</p>
           <p>
-                <span class="user-icon">
-                  <i class="iconfont icon-mobile icon-shouji"></i>
-                </span>
+            <span class="user-icon">
+              <i class="iconfont icon-mobile icon-shouji"></i>
+            </span>
             <span class="icon-mobile-number">暂无绑定手机号</span>
           </p>
         </div>
